@@ -1,0 +1,17 @@
+{
+  "name": "unpolarize-skills",
+  "version": "0.1.0",
+  "description": "MCP server exposing Unpolarize API as tools for Claude CLI",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "unpolarize-skills": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^4.4.1"
+  }
+}
