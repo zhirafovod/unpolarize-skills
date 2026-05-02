@@ -1,11 +1,21 @@
 #!/usr/bin/env node
 
+import { handleCli, loadToken, saveToken, getBaseUrl } from "./auth.js";
+
+// ── CLI subcommands (login/logout/status) ──
+const subcommand = process.argv[2];
+if (["login", "logout", "status"].includes(subcommand)) {
+  await handleCli(process.argv.slice(2));
+  process.exit(0);
+}
+
+// ── MCP server mode ──
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
-const BASE_URL = process.env.UNPOLARIZE_API_URL || "https://unpolarize-652421979088.us-west1.run.app";
-const TOKEN = process.env.UNPOLARIZE_TOKEN || "";
+const BASE_URL = getBaseUrl();
+let TOKEN = loadToken();
 
 async function api(method, path, body) {
   const url = `${BASE_URL}/api${path}`;
@@ -32,6 +42,10 @@ server.tool(
   { username: z.string().optional(), email: z.string().optional(), password: z.string() },
   async ({ username, email, password }) => {
     const result = await api("POST", "/auth/signin", { username, email, password });
+    if (result.token) {
+      saveToken(result.token);
+      TOKEN = result.token;
+    }
     return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
   }
 );

@@ -12,14 +12,31 @@ cd unpolarize-skills
 npm install
 ```
 
-### 2. Add to Claude CLI
-
-Add this to your `~/.claude/claude_desktop_config.json` or run:
+### 2. Sign in
 
 ```bash
-claude mcp add unpolarize-skills node /path/to/unpolarize-skills/src/index.js \
-  -e UNPOLARIZE_TOKEN=<your-jwt-token> \
-  -e UNPOLARIZE_API_URL=https://unpolarize-652421979088.us-west1.run.app
+npx unpolarize-skills login
+```
+
+This opens your browser to the Unpolarize sign-in page. After you log in, the token is saved to `~/.unpolarize/token` automatically.
+
+If you're on a headless machine, use:
+
+```bash
+npx unpolarize-skills login --no-browser
+```
+
+Check your auth status or log out:
+
+```bash
+npx unpolarize-skills status
+npx unpolarize-skills logout
+```
+
+### 3. Add to Claude CLI
+
+```bash
+claude mcp add unpolarize-skills node /path/to/unpolarize-skills/src/index.js
 ```
 
 Or add manually to `.claude.json` in any project:
@@ -29,19 +46,13 @@ Or add manually to `.claude.json` in any project:
   "mcpServers": {
     "unpolarize-skills": {
       "command": "node",
-      "args": ["/path/to/unpolarize-skills/src/index.js"],
-      "env": {
-        "UNPOLARIZE_TOKEN": "<your-jwt-token>",
-        "UNPOLARIZE_API_URL": "https://unpolarize-652421979088.us-west1.run.app"
-      }
+      "args": ["/path/to/unpolarize-skills/src/index.js"]
     }
   }
 }
 ```
 
-### 3. Get a token
-
-Sign in via the `signin` tool or get a token from the web UI (check localStorage for `token` after logging in).
+The server loads the token from `~/.unpolarize/token` automatically. You can also set `UNPOLARIZE_TOKEN` as an env var to override.
 
 ## Available Tools
 
